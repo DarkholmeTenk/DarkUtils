@@ -44,9 +44,11 @@ public class Unifier
 	private boolean isValidOreName(String name)
 	{
 		for(String b : acceptedBeginnings)
-			if(name.startsWith(b)) return true;
+			if(!b.isEmpty())
+				if(name.startsWith(b)) return true;
 		for(String e : acceptedEnds)
-			if(name.endsWith(e)) return true;
+			if(!e.isEmpty())
+				if(name.endsWith(e)) return true;
 		return false;
 	}
 
