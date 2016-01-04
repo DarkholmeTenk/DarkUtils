@@ -8,10 +8,13 @@ import io.darkcraft.darkutils.mod.DarkUtilsMod;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -83,12 +86,46 @@ public class Unifier
 		}
 	}
 
+	@SubscribeEvent
+	public void handleItemSpawn(EntityJoinWorldEvent event)
+	{
+		if(event.isCanceled()) return;
+		Entity e = event.entity;
+		if(e instanceof EntityItem)
+		{
+			EntityItem ei = (EntityItem) e;
+			ItemStack i = ei.getEntityItem();
+			ItemStack n = getUnified(i);
+			if(n != i)
+				ei.setEntityItemStack(n);
+		}
+	}
+
 	private ItemStack newItemStack(ItemStack old, int amount)
 	{
 		if(old == null) return null;
 		ItemStack toRet = old.copy();
 		toRet.stackSize = amount;
 		return toRet;
+	}
+
+	private ItemStack getUnified(ItemStack is)
+	{
+		if(is == null) return null;
+		int[] possibleIDs = OreDictionary.getOreIDs(is);
+		for(int id : possibleIDs)
+		{
+			String associatedName = OreDictionary.getOreName(id);
+			if(unifiedMap.containsKey(associatedName))
+			{
+				ItemStack unified = unifiedMap.get(associatedName);
+				if(OreDictionary.itemMatches(unified, is, true)) break;
+				ItemStack ret = unified.copy();
+				ret.stackSize = is.stackSize;
+				return ret;
+			}
+		}
+		return is;
 	}
 
 	private void unify(EntityPlayer player)
