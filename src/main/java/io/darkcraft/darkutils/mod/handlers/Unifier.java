@@ -1,11 +1,14 @@
 package io.darkcraft.darkutils.mod.handlers;
 
 import io.darkcraft.darkcore.mod.config.ConfigFile;
+import io.darkcraft.darkcore.mod.helpers.MessageHelper;
+import io.darkcraft.darkcore.mod.helpers.PlayerHelper;
 import io.darkcraft.darkcore.mod.helpers.ServerHelper;
 import io.darkcraft.darkcore.mod.helpers.WorldHelper;
 import io.darkcraft.darkutils.mod.DarkUtilsMod;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
@@ -29,6 +32,8 @@ public class Unifier
 	private static String[] acceptedBeginnings;
 	private static String[] acceptedEnds;
 	private static int delay = 20;
+
+	public static HashSet<String> disabledUsernames = new HashSet();
 
 	public static void refreshConfigs()
 	{
@@ -78,6 +83,10 @@ public class Unifier
 				String[] usernames = MinecraftServer.getServer().getAllUsernames();
 				for(String username : usernames)
 				{
+					synchronized(disabledUsernames)
+					{
+						if(disabledUsernames.contains(username)) continue;
+					}
 					EntityPlayer player = ServerHelper.getPlayer(username);
 					if(player != null)
 						unify(player);
@@ -171,5 +180,23 @@ public class Unifier
 		}
 		if(changed)
 			player.inventory.markDirty();
+	}
+
+	public static void togglePlayer(EntityPlayer pl)
+	{
+		synchronized(disabledUsernames)
+		{
+			String un = PlayerHelper.getUsername(pl);
+			if(disabledUsernames.contains(un))
+			{
+				disabledUsernames.remove(un);
+				MessageHelper.sendMessage(pl, "Unifier now disabled for you");
+			}
+			else
+			{
+				disabledUsernames.add(un);
+				MessageHelper.sendMessage(pl, "Unifier now enabled for you");
+			}
+		}
 	}
 }

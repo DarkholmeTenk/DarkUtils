@@ -2,7 +2,9 @@ package io.darkcraft.darkutils.mod;
 
 import io.darkcraft.darkcore.mod.config.ConfigHandler;
 import io.darkcraft.darkcore.mod.config.ConfigHandlerFactory;
+import io.darkcraft.darkcore.mod.handlers.CommandHandler;
 import io.darkcraft.darkcore.mod.interfaces.IConfigHandlerMod;
+import io.darkcraft.darkutils.mod.commands.UnifierCommand;
 import io.darkcraft.darkutils.mod.handlers.Unifier;
 
 import java.util.Map;
@@ -17,14 +19,15 @@ import cpw.mods.fml.relauncher.Side;
 @Mod(modid = "darkutils", version = "0.1", acceptableRemoteVersions="*")
 public class DarkUtilsMod implements IConfigHandlerMod
 {
-	private static final String modName = "darkutils";
-	private static final Unifier unifier = new Unifier();
+	public static final String modName = "darkutils";
+	public static final Unifier unifier = new Unifier();
 	public static ConfigHandler configHandler;
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		configHandler = ConfigHandlerFactory.getConfigHandler(this);
+		CommandHandler.registerCommand(new UnifierCommand());
 		Unifier.refreshConfigs();
 		unifier.getUnificationList();
 		FMLCommonHandler.instance().bus().register(unifier);
