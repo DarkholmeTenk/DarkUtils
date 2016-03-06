@@ -1,7 +1,6 @@
-package io.darkcraft.darkutils.mod.commands;
+package io.darkcraft.darkutils.mod.unifier;
 
 import io.darkcraft.darkcore.mod.abstracts.AbstractCommandNew;
-import io.darkcraft.darkutils.mod.handlers.Unifier;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package io.darkcraft.darkutils.mod.handlers;
+package io.darkcraft.darkutils.mod.unifier;
 
 import io.darkcraft.darkcore.mod.config.ConfigFile;
 import io.darkcraft.darkcore.mod.helpers.MessageHelper;
@@ -190,12 +190,12 @@ public class Unifier
 			if(disabledUsernames.contains(un))
 			{
 				disabledUsernames.remove(un);
-				MessageHelper.sendMessage(pl, "Unifier now disabled for you");
+				MessageHelper.sendMessage(pl, "Unifier now enabled for you");
 			}
 			else
 			{
 				disabledUsernames.add(un);
-				MessageHelper.sendMessage(pl, "Unifier now enabled for you");
+				MessageHelper.sendMessage(pl, "Unifier now disabled for you");
 			}
 		}
 	}
