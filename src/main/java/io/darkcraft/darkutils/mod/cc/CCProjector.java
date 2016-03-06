@@ -102,7 +102,12 @@ public class CCProjector extends AbstractBlockContainer
 				case 1: text = (String)arguments[0]; break;
 				case 2: offsetX = (Double)arguments[0]; offsetY = (Double)arguments[1]; offsetZ = (Double)arguments[2]; break;
 				case 3: angle = (Double)arguments[0]; break;
-				case 4: color = (int)(double)(Double)arguments[0]; break;
+				case 4:
+					if(arguments.length == 1)
+						color = (int)(double)(Double)arguments[0];
+					else
+						color = (int)(((Double)arguments[0]*65536) + ((Double)arguments[1]*256) + (Double)arguments[2]);
+					break;
 				case 5: shadow = (Boolean)arguments[0]; break;
 				case 6: scale = (Double)arguments[0]; break;
 				case 7: showBack = (Boolean)arguments[0]; break;
