@@ -184,6 +184,9 @@ public class CCProjector extends AbstractBlockContainer
 		}
 
 		@Override
+		public boolean handleLighting(){return false;}
+
+		@Override
 		public void renderBlock(Tessellator tess, TileEntity te, int x, int y, int z)
 		{
 			if(!(te instanceof CCProjectorTE)) return;

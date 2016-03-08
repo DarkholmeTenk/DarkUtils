@@ -146,7 +146,7 @@ public class CCTeamBlock extends AbstractBlockContainer implements IPeripheral
 			}
 			return new Object[]{"noargs"};
 		}
-		if(method == 6)
+		if(method == 8)
 		{
 			if(arguments.length == 1)
 			{
@@ -163,10 +163,10 @@ public class CCTeamBlock extends AbstractBlockContainer implements IPeripheral
 			{
 				EntityPlayer pl = PlayerHelper.getPlayer((String) arguments[0]);
 				if(pl == null) return new Object[]{"nopl"};
-				World w = WorldHelper.getWorld((Integer) arguments[1]);
-				int x = (Integer) arguments[2];
-				int y = (Integer) arguments[3];
-				int z = (Integer) arguments[4];
+				World w = WorldHelper.getWorld((int)(double)(Double) arguments[1]);
+				int x = (int)(double)(Double) arguments[2];
+				int y = (int)(double)(Double) arguments[3];
+				int z = (int)(double)(Double) arguments[4];
 				TileEntity te = w.getTileEntity(x, y, z);
 				if(!(te instanceof IInventory)) return new Object[]{"noinv"};
 				IInventory inv = (IInventory)te;
