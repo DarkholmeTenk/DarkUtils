@@ -72,6 +72,18 @@ public class CCTeamBlock extends AbstractBlockContainer implements IPeripheral
 		return meths;
 	}
 
+	private int gI(Object o)
+	{
+		if(o instanceof String)
+			return Integer.parseInt((String)o);
+		if(o instanceof Double)
+		{
+			double d = (Double) o;
+			return (int) d;
+		}
+		return 0;
+	}
+
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
 	{
@@ -163,10 +175,10 @@ public class CCTeamBlock extends AbstractBlockContainer implements IPeripheral
 			{
 				EntityPlayer pl = PlayerHelper.getPlayer((String) arguments[0]);
 				if(pl == null) return new Object[]{"nopl"};
-				World w = WorldHelper.getWorld((int)(double)(Double) arguments[1]);
-				int x = (int)(double)(Double) arguments[2];
-				int y = (int)(double)(Double) arguments[3];
-				int z = (int)(double)(Double) arguments[4];
+				World w = WorldHelper.getWorld(gI(arguments[1]));
+				int x = gI(arguments[2]);
+				int y = gI(arguments[3]);
+				int z = gI(arguments[4]);
 				TileEntity te = w.getTileEntity(x, y, z);
 				if(!(te instanceof IInventory)) return new Object[]{"noinv"};
 				IInventory inv = (IInventory)te;
