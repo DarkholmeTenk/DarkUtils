@@ -8,6 +8,9 @@ import io.darkcraft.darkutils.mod.DarkUtilsMod;
 import io.darkcraft.darkutils.mod.teams.Region;
 import io.darkcraft.darkutils.mod.teams.TeamData;
 import io.darkcraft.darkutils.mod.teams.TeamSystem;
+
+import java.util.HashMap;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.scoreboard.Team;
@@ -55,7 +58,7 @@ public class CCTeamBlock extends AbstractBlockContainer implements IPeripheral
 
 	private static class CCTeamTE extends AbstractTileEntity
 	{
-
+		public CCTeamTE(){}
 	}
 
 	@Override
@@ -84,15 +87,23 @@ public class CCTeamBlock extends AbstractBlockContainer implements IPeripheral
 		return 0;
 	}
 
+	private Object[] toMap(Object[] in)
+	{
+		HashMap<Integer,Object> map = new HashMap<Integer,Object>();
+		for(int i = 0; i < in.length; i++)
+			map.put(i,in[i]);
+		return new Object[]{map};
+	}
+
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
 	{
 		if(method == 0)
-			return TeamSystem.getTeamStore().getTeams().toArray();
+			return toMap(TeamSystem.getTeamStore().getTeams().toArray());
 		if(method == 1)
 		{
 			if(arguments.length == 1)
-				return TeamSystem.getTeamStore().getTeamData((String) arguments[0]).getPlayers().toArray();
+				return toMap(TeamSystem.getTeamStore().getTeamData((String) arguments[0]).getPlayers().toArray());
 			return new Object[]{false};
 		}
 		if(method == 2)
@@ -109,7 +120,7 @@ public class CCTeamBlock extends AbstractBlockContainer implements IPeripheral
 		}
 		if(method == 3)
 		{
-			return PlayerHelper.getAllUsernames();
+			return toMap(PlayerHelper.getAllUsernames());
 		}
 		if(method == 4)
 		{
@@ -148,6 +159,17 @@ public class CCTeamBlock extends AbstractBlockContainer implements IPeripheral
 		{
 			if(arguments.length == 1)
 			{
+				Region r = Region.getRegion((String) arguments[0], false);
+				if(r == null) return new Object[]{"Noregion"};
+				if(r.parentRegion == null) return new Object[]{null};
+				return new Object[]{r.parentRegion.id};
+			}
+			return new Object[]{"noargs"};
+		}
+		if(method == 8)
+		{
+			if(arguments.length == 1)
+			{
 				EntityPlayer pl = PlayerHelper.getPlayer((String) arguments[0]);
 				if(pl == null) return new Object[]{"nopl"};
 				Team t = pl.getTeam();
@@ -158,33 +180,26 @@ public class CCTeamBlock extends AbstractBlockContainer implements IPeripheral
 			}
 			return new Object[]{"noargs"};
 		}
-		if(method == 8)
-		{
-			if(arguments.length == 1)
-			{
-				Region r = Region.getRegion((String) arguments[0], false);
-				if(r == null) return new Object[]{"Noregion"};
-				if(r.parentRegion == null) return new Object[]{null};
-				return new Object[]{r.parentRegion.id};
-			}
-			return new Object[]{"noargs"};
-		}
 		if(method == 9)
 		{
 			if(arguments.length == 5)
 			{
 				EntityPlayer pl = PlayerHelper.getPlayer((String) arguments[0]);
 				if(pl == null) return new Object[]{"nopl"};
-				World w = WorldHelper.getWorld(gI(arguments[1]));
+				World w = WorldHelper.getWorldServer(gI(arguments[1]));
+				if(w == null) return new Object[]{"nowrld"};
 				int x = gI(arguments[2]);
 				int y = gI(arguments[3]);
 				int z = gI(arguments[4]);
 				TileEntity te = w.getTileEntity(x, y, z);
 				if(!(te instanceof IInventory)) return new Object[]{"noinv"};
 				IInventory inv = (IInventory)te;
-				int num = Math.min(pl.inventory.getSizeInventory(), inv.getSizeInventory());
+				int num = Math.min(pl.inventory.mainInventory.length, inv.getSizeInventory());
 				for(int i = 0;i < num; i++)
-					pl.inventory.setInventorySlotContents(i, inv.getStackInSlot(i).copy());
+					if(inv.getStackInSlot(i) != null)
+						pl.inventory.mainInventory[i] = inv.getStackInSlot(i).copy();
+				pl.inventory.inventoryChanged = true;
+				return new Object[]{true};
 			}
 			return new Object[]{"noargs"};
 		}

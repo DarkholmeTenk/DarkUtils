@@ -83,7 +83,8 @@ public class RegionCommand extends AbstractCommandNew
 				String newID = strList.get(0);
 				Region r = Region.getRegion(newID, false);
 				sendString(sen,(r == null ? "Created region " : "Updating region ") + newID);
-				r = Region.getRegion(newID, true);
+				if(r == null)
+					r = Region.getRegion(newID, true);
 				if(strList.size() == 4)
 				{
 					String name = strList.get(1);
@@ -111,7 +112,8 @@ public class RegionCommand extends AbstractCommandNew
 					}
 					r.setName(name);
 					r.owningTeam = t;
-					if((parent == null) && (r.parentRegion != null)) r.parentRegion.removeChild(r);
+					if((r.parentRegion != null) && (parent != r.parentRegion)) r.parentRegion.removeChild(r);
+					if((parent != null) && (r.parentRegion != parent)) parent.addChild(r);
 				}
 				return true;
 			}
