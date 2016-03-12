@@ -35,6 +35,8 @@ public class CCProjector extends AbstractBlockContainer
 	public CCProjector()
 	{
 		super(DarkUtilsMod.modName);
+		lightOpacity = 0;
+		opaque = false;
 	}
 
 	@Override
