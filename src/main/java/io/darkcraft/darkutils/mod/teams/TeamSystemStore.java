@@ -131,7 +131,7 @@ public class TeamSystemStore extends AbstractWorldDataStore
 		if(!(oth instanceof EntityLivingBase)) return;
 		EntityLivingBase other = (EntityLivingBase)oth;
 		Team deadTeam = ent.getTeam();
-		Team killTeam = ent.getTeam();
+		Team killTeam = other.getTeam();
 		if((killTeam == null) || (deadTeam == null)) return;
 		TeamData killData = getTeamData(killTeam);
 		TeamData deadData = getTeamData(deadTeam);
