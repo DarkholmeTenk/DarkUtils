@@ -1,12 +1,14 @@
 package io.darkcraft.darkutils.mod.teams;
 
 import io.darkcraft.darkcore.mod.helpers.MessageHelper;
+import io.darkcraft.darkcore.mod.helpers.PlayerHelper;
 
 import java.lang.ref.WeakReference;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
@@ -16,6 +18,7 @@ public class TeamPlayerData implements IExtendedEntityProperties
 	private Region pastRegion = null;
 	private Region inRegion = null;
 	private int timeInRegion = 0;
+	private boolean inPVP = true;
 
 	public TeamPlayerData(EntityPlayer pl)
 	{
@@ -52,6 +55,19 @@ public class TeamPlayerData implements IExtendedEntityProperties
 				else
 					if(inRegion != null)
 						MessageHelper.sendMessage(pl, "You are now entering " + inRegion.getName());
+				Team ot = pastRegion == null ? null : pastRegion.owningTeam;
+				Team nt = inRegion == null ? null : inRegion.owningTeam;
+				if((ot == null) || (nt == null) || !ot.isSameTeam(nt))
+				{
+					if(!inPVP)
+					{
+						inPVP = true;
+						if((nt != null) && !nt.isSameTeam(PlayerHelper.getTeam(pl)))
+							MessageHelper.sendMessage(pl, "PVP has been re-enabled, use '/dcut team pvp' to disable", 10);
+						else
+							MessageHelper.sendMessage(pl, "PVP has been re-enabled",10);
+					}
+				}
 			}
 		}
 	}
@@ -59,17 +75,15 @@ public class TeamPlayerData implements IExtendedEntityProperties
 
 
 	@Override
-	public void saveNBTData(NBTTagCompound compound)
+	public void saveNBTData(NBTTagCompound nbt)
 	{
-		// TODO Auto-generated method stub
-
+		nbt.setBoolean("inPVP", inPVP);
 	}
 
 	@Override
-	public void loadNBTData(NBTTagCompound compound)
+	public void loadNBTData(NBTTagCompound nbt)
 	{
-		// TODO Auto-generated method stub
-
+		inPVP = nbt.hasKey("inPVP") ? nbt.getBoolean("inPVP") : true;
 	}
 
 	@Override

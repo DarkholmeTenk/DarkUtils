@@ -68,7 +68,7 @@ public class CCTeamBlock extends AbstractBlockContainer implements IPeripheral
 	}
 
 	private static final String[] meths = {"getTeamNames","getTeamMembers","getTeam","getOnlinePlayers","getPos","getRegion","getRegionOwner","getRegionParent",
-		"teleportHome","copyInv"};
+		"teleportHome","copyInv","getTeamScore"};
 	@Override
 	public String[] getMethodNames()
 	{
@@ -202,6 +202,27 @@ public class CCTeamBlock extends AbstractBlockContainer implements IPeripheral
 				return new Object[]{true};
 			}
 			return new Object[]{"noargs"};
+		}
+		if(method == 10)
+		{
+			if(arguments.length == 1)
+			{
+				Team t = PlayerHelper.getTeam(0, (String) arguments[0]);
+				if(t == null) return new Object[]{"noteam"};
+				TeamData td = TeamSystem.getTeamStore().getTeamData(t);
+				return new Object[]{td.getTotalScore()};
+			}
+			else if(arguments.length == 2)
+			{
+				Team t = PlayerHelper.getTeam(0, (String) arguments[0]);
+				if(t == null) return new Object[]{"noteam"};
+				TeamData td = TeamSystem.getTeamStore().getTeamData(t);
+				Team to = PlayerHelper.getTeam(0, (String) arguments[1]);
+				if(to == null) return new Object[]{"noteam2"};
+				return new Object[]{td.getScore(to.getRegisteredName())};
+			}
+			else
+				return new Object[]{"noargs"};
 		}
 		return null;
 	}

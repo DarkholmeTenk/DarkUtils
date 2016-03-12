@@ -14,7 +14,7 @@ public class TeamCommand extends AbstractCommandNew
 {
 	public TeamCommand()
 	{
-		super(new RegionCommand(), new ZoneCommand(), new HomeSC());
+		super(new RegionCommand(), new ZoneCommand(), new HomeSC(), new SetScoreSC());
 	}
 
 	@Override
@@ -89,6 +89,54 @@ public class TeamCommand extends AbstractCommandNew
 				sendString(sen,"Unrecognised command - " + c);
 				return false;
 			}
+			return true;
+		}
+	}
+
+	private static class SetScoreSC extends AbstractCommandNew
+	{
+		@Override
+		public String getCommandName(){ return "setscore";}
+
+		@Override
+		public void getAliases(List<String> list){}
+
+		@Override
+		public void getCommandUsage(ICommandSender s, String tc)
+		{
+			sendString(s,tc + " [teamName] [against] [newScore]");
+		}
+
+		@Override
+		public boolean process(ICommandSender sen, List<String> strList)
+		{
+			if(strList.size() != 3) return false;
+			String tn = strList.get(0);
+			String to = strList.get(1);
+			String sc = strList.get(2);
+			int score;
+			try
+			{
+				score = Integer.parseInt(sc);
+			}
+			catch(NumberFormatException e)
+			{
+				sendString(sen, sc + " is not a valid number");
+				return false;
+			}
+			if(!TeamSystem.getTeamStore().getTeams().contains(tn))
+			{
+				sendString(sen,"Team not found, try creating it or assigning somebody to it");
+				return false;
+			}
+			if(!TeamSystem.getTeamStore().getTeams().contains(to))
+			{
+				sendString(sen,"Team not found, try creating it or assigning somebody to it");
+				return false;
+			}
+			TeamData td = TeamSystem.getTeamStore().getTeamData(tn);
+			td.setScore(to, score);
+			sendString(sen,"Score set");
 			return true;
 		}
 	}

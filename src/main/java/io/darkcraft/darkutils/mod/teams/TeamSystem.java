@@ -12,9 +12,18 @@ public class TeamSystem
 	public static ConfigFile teamConfig = DarkUtilsMod.configHandler.registerConfigNeeder("teamSystem");
 
 	public static boolean teamSystemEnabled = false;
+	public static int selfTeamKillPoints = -3;
+	public static int killInEnemyRegionPoints = 4;
+	public static int killInYourRegionPoints = 2;
+	public static int killInNoRegionPoints = 2;
+
 	public static void refreshConfigs()
 	{
 		teamSystemEnabled = teamConfig.getBoolean("enabled", false, "If true, this enables the team system");
+		selfTeamKillPoints = teamConfig.getInt("Points - Self kill", -3, "Points awarded when you kill a member of your own team");
+		killInEnemyRegionPoints = teamConfig.getInt("Points - Kill in enemy region", 4, "Points awarded when you kill an enemy in their region");
+		killInYourRegionPoints = teamConfig.getInt("Points - Kill in your own region", 2, "Points awarded for defending a region");
+		killInNoRegionPoints = teamConfig.getInt("Points - Kill in no region", 2, "Points awarded for a kill in no-man's land");
 	}
 
 	private static TeamSystemStore teamSystemStore;

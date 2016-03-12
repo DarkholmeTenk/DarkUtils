@@ -10,10 +10,12 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Team;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
@@ -117,6 +119,32 @@ public class TeamSystemStore extends AbstractWorldDataStore
 		if((event.type != Type.SERVER) || (event.phase != Phase.END)) return;
 		tt++;
 		if((tt % 20) == 0) handlePlayerData();
+	}
+
+	public void deathHandler(LivingDeathEvent event)
+	{
+		EntityLivingBase ent = event.entityLiving;
+		Entity oth = event.source.getSourceOfDamage();
+		if(!(oth instanceof EntityLivingBase)) return;
+		EntityLivingBase other = (EntityLivingBase)oth;
+		Team deadTeam = ent.getTeam();
+		Team killTeam = ent.getTeam();
+		if((killTeam == null) || (deadTeam == null)) return;
+		TeamData killData = getTeamData(killTeam);
+		TeamData deadData = getTeamData(deadTeam);
+		if(deadTeam == killTeam) killData.addPoint(killTeam.getRegisteredName(), TeamSystem.selfTeamKillPoints);
+		Region or = Region.getRegion(ent);
+		Team owningTeam = (or == null) ? null : or.owningTeam;
+		if(owningTeam == null) killData.addPoint(deadTeam.getRegisteredName(), TeamSystem.killInNoRegionPoints);
+		if(killTeam.isSameTeam(owningTeam)) killData.addPoint(deadTeam.getRegisteredName(), TeamSystem.killInYourRegionPoints);
+		if(deadTeam.isSameTeam(owningTeam)) killData.addPoint(deadTeam.getRegisteredName(), TeamSystem.killInEnemyRegionPoints);
+		if(ent instanceof EntityPlayer)
+		{
+			EntityPlayer pl = (EntityPlayer)ent;
+			if((pl.getBedLocation(0) == null) && (deadData.getHome() != null))
+				pl.setSpawnChunk(deadData.getHome().toChunkCoordinates(), true, 0);
+		}
+		//String tn = StatCollector.translateToLocal(killTeam.getRegisteredName());
 	}
 
 	@Override
