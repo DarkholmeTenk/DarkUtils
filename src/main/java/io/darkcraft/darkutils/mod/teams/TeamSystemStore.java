@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Team;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
@@ -121,8 +122,10 @@ public class TeamSystemStore extends AbstractWorldDataStore
 		if((tt % 20) == 0) handlePlayerData();
 	}
 
+	@SubscribeEvent(priority=EventPriority.LOWEST)
 	public void deathHandler(LivingDeathEvent event)
 	{
+		if(event.isCanceled()) return;
 		EntityLivingBase ent = event.entityLiving;
 		Entity oth = event.source.getSourceOfDamage();
 		if(!(oth instanceof EntityLivingBase)) return;
