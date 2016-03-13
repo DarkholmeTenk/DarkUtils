@@ -30,6 +30,21 @@ public class TeamPlayerData implements IExtendedEntityProperties
 
 	}
 
+	private String getRegionName(Region r)
+	{
+		EntityPlayer pl = player.get();
+		if(pl == null) return "";
+		Team t = pl.getTeam();
+		if((t != null) && (r.owningTeam!=t))
+		{
+			if(r.owningTeam != null)
+				return "(H)"+r.getName();
+			else
+				return "(N)"+r.getName();
+		}
+		return r.getName();
+	}
+
 	public void setInRegion(Region r)
 	{
 		EntityPlayer pl = player.get();
@@ -48,13 +63,13 @@ public class TeamPlayerData implements IExtendedEntityProperties
 				if(pastRegion != null)
 				{
 					if(inRegion == null)
-						MessageHelper.sendMessage(pl, "You are now leaving " + pastRegion.getName());
+						MessageHelper.sendMessage(pl, "You are now leaving " + getRegionName(pastRegion));
 					else
-						MessageHelper.sendMessage(pl, "You are now leaving " + pastRegion.getName()+"\nAnd now entering " + inRegion.getName());
+						MessageHelper.sendMessage(pl, "You are now leaving " + getRegionName(pastRegion)+"\nAnd now entering " + getRegionName(inRegion));
 				}
 				else
 					if(inRegion != null)
-						MessageHelper.sendMessage(pl, "You are now entering " + inRegion.getName());
+						MessageHelper.sendMessage(pl, "You are now entering " + getRegionName(inRegion));
 				Team ot = pastRegion == null ? null : pastRegion.owningTeam;
 				Team nt = inRegion == null ? null : inRegion.owningTeam;
 				if((ot == null) || (nt == null) || !ot.isSameTeam(nt))
@@ -63,7 +78,7 @@ public class TeamPlayerData implements IExtendedEntityProperties
 					{
 						inPVP = true;
 						if((nt != null) && !nt.isSameTeam(PlayerHelper.getTeam(pl)))
-							MessageHelper.sendMessage(pl, "PVP has been re-enabled, use '/dcut team pvp' to disable", 10);
+							MessageHelper.sendMessage(pl, "PVP has been re-enabled, use '/dct pvp' to disable", 10);
 						else
 							MessageHelper.sendMessage(pl, "PVP has been re-enabled",10);
 					}
