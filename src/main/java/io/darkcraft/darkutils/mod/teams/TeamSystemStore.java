@@ -134,6 +134,7 @@ public class TeamSystemStore extends AbstractWorldDataStore
 		{
 			for(Entry<EntityLivingBase,SimpleDoubleCoordStore> ent : teleportQueue.entrySet())
 				TeleportHelper.teleportEntity(ent.getKey(), ent.getValue());
+			teleportQueue.clear();
 		}
 		tt++;
 		if((tt % 20) == 0) handlePlayerData();
