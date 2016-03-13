@@ -1,7 +1,6 @@
 package io.darkcraft.darkutils.mod.teams;
 
 import io.darkcraft.darkcore.mod.datastore.SimpleCoordStore;
-import io.darkcraft.darkcore.mod.helpers.TeleportHelper;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -119,7 +118,8 @@ public class TeamData
 
 	public void teleportHome(EntityPlayer pl)
 	{
-		TeleportHelper.teleportEntity(pl, home.getCenter());
+		if(home == null) return;
+		TeamSystem.getTeamStore().addToTeleportQueue(pl, home.getCenter());
 	}
 
 }

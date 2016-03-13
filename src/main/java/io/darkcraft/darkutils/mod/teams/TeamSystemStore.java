@@ -1,10 +1,13 @@
 package io.darkcraft.darkutils.mod.teams;
 
 import io.darkcraft.darkcore.mod.abstracts.AbstractWorldDataStore;
+import io.darkcraft.darkcore.mod.datastore.SimpleDoubleCoordStore;
 import io.darkcraft.darkcore.mod.helpers.PlayerHelper;
 import io.darkcraft.darkcore.mod.helpers.ServerHelper;
+import io.darkcraft.darkcore.mod.helpers.TeleportHelper;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -114,10 +117,24 @@ public class TeamSystemStore extends AbstractWorldDataStore
 		}
 	}
 
+	private volatile Map<EntityLivingBase,SimpleDoubleCoordStore> teleportQueue = new HashMap();
+	public void addToTeleportQueue(EntityLivingBase ent, SimpleDoubleCoordStore location)
+	{
+		synchronized(teleportQueue)
+		{
+			teleportQueue.put(ent,location);
+		}
+	}
+
 	@SubscribeEvent
 	public void tickHandler(ServerTickEvent event)
 	{
 		if((event.type != Type.SERVER) || (event.phase != Phase.END)) return;
+		synchronized(teleportQueue)
+		{
+			for(Entry<EntityLivingBase,SimpleDoubleCoordStore> ent : teleportQueue.entrySet())
+				TeleportHelper.teleportEntity(ent.getKey(), ent.getValue());
+		}
 		tt++;
 		if((tt % 20) == 0) handlePlayerData();
 	}
