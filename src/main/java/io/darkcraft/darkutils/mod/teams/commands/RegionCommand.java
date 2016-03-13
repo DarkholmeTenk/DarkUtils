@@ -55,7 +55,9 @@ public class RegionCommand extends AbstractCommandNew
 			{
 				Region r = Region.getRegion(s, false);
 				if(r == null) continue;
-				sendString(sen,String.format("%10s: Name:%s ParentID:%s Team:%s", s, r.getName(),r.parentRegion.id,r.owningTeam.getRegisteredName()));
+				String pid = r.parentRegion == null  ? "null" : r.parentRegion.id;
+				String tid = r.owningTeam == null ? "null" : r.owningTeam.getRegisteredName();
+				sendString(sen,String.format("%10s: Name:%s ParentID:%s Team:%s", s, r.getName(),pid, tid));
 			}
 			return true;
 		}
