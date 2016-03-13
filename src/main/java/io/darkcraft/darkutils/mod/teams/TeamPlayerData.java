@@ -108,4 +108,14 @@ public class TeamPlayerData implements IExtendedEntityProperties
 
 	}
 
+	public void togglePVP()
+	{
+		inPVP = !inPVP;
+	}
+
+	public boolean inPVP()
+	{
+		return inPVP;
+	}
+
 }

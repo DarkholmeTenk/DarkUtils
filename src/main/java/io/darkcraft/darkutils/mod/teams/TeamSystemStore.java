@@ -19,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Team;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
@@ -138,6 +139,33 @@ public class TeamSystemStore extends AbstractWorldDataStore
 		}
 		tt++;
 		if((tt % 20) == 0) handlePlayerData();
+	}
+
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void hurtHandler(LivingHurtEvent event)
+	{
+		EntityLivingBase ent = event.entityLiving;
+		Entity oth = event.source.getSourceOfDamage();
+		if(!(oth instanceof EntityLivingBase)) return;
+		if(!(ent instanceof EntityPlayer)) return;
+		EntityLivingBase oent = (EntityLivingBase)oth;
+		EntityPlayer hp = (EntityPlayer)ent;
+		Team ht = ent.getTeam();
+		Team ot = oent.getTeam();
+		if((ht == null) || (ot == null)) return;
+		TeamPlayerData hd = TeamSystem.getTeamStore().getTeamPlayerData(hp);
+		if(!hd.inPVP())
+		{
+			event.setCanceled(true);
+			return;
+		}
+		if(!(oth instanceof EntityPlayer)) return;
+		TeamPlayerData od = TeamSystem.getTeamStore().getTeamPlayerData((EntityPlayer)oth);
+		if(!(od.inPVP()))
+		{
+			event.setCanceled(true);
+			return;
+		}
 	}
 
 	@SubscribeEvent(priority=EventPriority.LOWEST)
