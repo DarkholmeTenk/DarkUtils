@@ -149,22 +149,23 @@ public class TeamSystemStore extends AbstractWorldDataStore
 		if(!(oth instanceof EntityLivingBase)) return;
 		EntityLivingBase other = (EntityLivingBase)oth;
 		Team deadTeam = ent.getTeam();
-		Team killTeam = other.getTeam();
-		if((killTeam == null) || (deadTeam == null)) return;
-		TeamData killData = getTeamData(killTeam);
+		if(deadTeam == null) return;
 		TeamData deadData = getTeamData(deadTeam);
-		if(deadTeam == killTeam) killData.addPoint(killTeam.getRegisteredName(), TeamSystem.selfTeamKillPoints);
-		Region or = Region.getRegion(ent);
-		Team owningTeam = (or == null) ? null : or.owningTeam;
-		if(owningTeam == null) killData.addPoint(deadTeam.getRegisteredName(), TeamSystem.killInNoRegionPoints);
-		if(killTeam.isSameTeam(owningTeam)) killData.addPoint(deadTeam.getRegisteredName(), TeamSystem.killInYourRegionPoints);
-		if(deadTeam.isSameTeam(owningTeam)) killData.addPoint(deadTeam.getRegisteredName(), TeamSystem.killInEnemyRegionPoints);
 		if(ent instanceof EntityPlayer)
 		{
 			EntityPlayer pl = (EntityPlayer)ent;
 			if((pl.getBedLocation(0) == null) && (deadData.getHome() != null))
 				pl.setSpawnChunk(deadData.getHome().toChunkCoordinates(), true, 0);
 		}
+		Team killTeam = other.getTeam();
+		if((killTeam == null) || (deadTeam == null)) return;
+		TeamData killData = getTeamData(killTeam);
+		if(deadTeam == killTeam) killData.addPoint(killTeam.getRegisteredName(), TeamSystem.selfTeamKillPoints);
+		Region or = Region.getRegion(ent);
+		Team owningTeam = (or == null) ? null : or.owningTeam;
+		if(owningTeam == null) killData.addPoint(deadTeam.getRegisteredName(), TeamSystem.killInNoRegionPoints);
+		if(killTeam.isSameTeam(owningTeam)) killData.addPoint(deadTeam.getRegisteredName(), TeamSystem.killInYourRegionPoints);
+		if(deadTeam.isSameTeam(owningTeam)) killData.addPoint(deadTeam.getRegisteredName(), TeamSystem.killInEnemyRegionPoints);
 		//String tn = StatCollector.translateToLocal(killTeam.getRegisteredName());
 	}
 
