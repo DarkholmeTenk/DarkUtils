@@ -141,7 +141,7 @@ public class Region
 		{
 			NBTTagCompound snbt = new NBTTagCompound();
 			zones.get(i).writeToNBT(snbt);
-			nbt.setTag("z"+(i++),snbt);
+			nbt.setTag("z"+i,snbt);
 		}
 		if(owningTeam != null) nbt.setString("ownTeam", owningTeam.getRegisteredName());
 		nbt.setString("name", getName());
