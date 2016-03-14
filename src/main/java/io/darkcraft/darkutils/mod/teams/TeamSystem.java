@@ -16,6 +16,7 @@ public class TeamSystem
 	public static int killInEnemyRegionPoints = 4;
 	public static int killInYourRegionPoints = 2;
 	public static int killInNoRegionPoints = 2;
+	public static int goHomeTime = 1800;
 
 	public static void refreshConfigs()
 	{
@@ -24,6 +25,7 @@ public class TeamSystem
 		killInEnemyRegionPoints = teamConfig.getInt("Points - Kill in enemy region", 4, "Points awarded when you kill an enemy in their region");
 		killInYourRegionPoints = teamConfig.getInt("Points - Kill in your own region", 2, "Points awarded for defending a region");
 		killInNoRegionPoints = teamConfig.getInt("Points - Kill in no region", 2, "Points awarded for a kill in no-man's land");
+		goHomeTime = teamConfig.getInt("Go Home Time", 1800, "Number of seconds in an enemy region before getting teleported home");
 	}
 
 	private static TeamSystemStore teamSystemStore;

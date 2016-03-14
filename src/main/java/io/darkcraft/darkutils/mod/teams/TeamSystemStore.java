@@ -152,7 +152,7 @@ public class TeamSystemStore extends AbstractWorldDataStore
 		EntityPlayer hp = (EntityPlayer)ent;
 		Team ht = ent.getTeam();
 		Team ot = oent.getTeam();
-		if((ht == null) || (ot == null)) return;
+		if((ht == null) || (ot == null) || (ht == ot)) return;
 		TeamPlayerData hd = TeamSystem.getTeamStore().getTeamPlayerData(hp);
 		if(!hd.inPVP())
 		{

@@ -49,6 +49,7 @@ public class TeamPlayerData implements IExtendedEntityProperties
 	{
 		EntityPlayer pl = player.get();
 		if(pl == null) return;
+		Team plT = pl.getTeam();
 		if(r != inRegion)
 		{
 			pastRegion = inRegion;
@@ -84,6 +85,15 @@ public class TeamPlayerData implements IExtendedEntityProperties
 					}
 				}
 			}
+			if((plT!= null)&&(inRegion != null) && (inRegion.owningTeam!= null) && (inRegion.owningTeam!=plT))
+			{
+				if((timeInRegion >= TeamSystem.goHomeTime) && inPVP())
+				{
+					TeamData pltD = TeamSystem.getTeamStore().getTeamData(plT);
+					if(pltD.getHome() != null)
+						pltD.teleportHome(pl);
+				}
+			}
 		}
 	}
 
@@ -93,12 +103,17 @@ public class TeamPlayerData implements IExtendedEntityProperties
 	public void saveNBTData(NBTTagCompound nbt)
 	{
 		nbt.setBoolean("inPVP", inPVP);
+		if(inRegion != null)
+			nbt.setString("rid", inRegion.id);
+		nbt.setInteger("rt", timeInRegion);
 	}
 
 	@Override
 	public void loadNBTData(NBTTagCompound nbt)
 	{
 		inPVP = nbt.hasKey("inPVP") ? nbt.getBoolean("inPVP") : true;
+		inRegion = nbt.hasKey("rid") ? Region.getRegion(nbt.getString("rid"), false) : null;
+		timeInRegion = nbt.getInteger("rt");
 	}
 
 	@Override
