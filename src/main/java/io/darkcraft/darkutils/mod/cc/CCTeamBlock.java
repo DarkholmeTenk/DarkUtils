@@ -1,7 +1,6 @@
 package io.darkcraft.darkutils.mod.cc;
 
-import io.darkcraft.darkcore.mod.abstracts.AbstractBlockContainer;
-import io.darkcraft.darkcore.mod.abstracts.AbstractTileEntity;
+import io.darkcraft.darkcore.mod.abstracts.AbstractBlock;
 import io.darkcraft.darkcore.mod.helpers.PlayerHelper;
 import io.darkcraft.darkcore.mod.helpers.WorldHelper;
 import io.darkcraft.darkutils.mod.DarkUtilsMod;
@@ -23,7 +22,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Optional.Interface(iface="dan200.computercraft.api.peripheral.IPeripheral",modid="ComputerCraft")
-public class CCTeamBlock extends AbstractBlockContainer implements IPeripheral
+public class CCTeamBlock extends AbstractBlock implements IPeripheral
 {
 
 	public CCTeamBlock()
@@ -42,23 +41,6 @@ public class CCTeamBlock extends AbstractBlockContainer implements IPeripheral
 	{
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
-	{
-		return new CCTeamTE();
-	}
-
-	@Override
-	public Class<? extends TileEntity> getTEClass()
-	{
-		return CCTeamTE.class;
-	}
-
-	private static class CCTeamTE extends AbstractTileEntity
-	{
-		public CCTeamTE(){}
 	}
 
 	@Override
