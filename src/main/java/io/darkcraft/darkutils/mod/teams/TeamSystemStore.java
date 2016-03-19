@@ -17,6 +17,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Team;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -76,7 +77,7 @@ public class TeamSystemStore extends AbstractWorldDataStore
 	public void playerHandler(EntityConstructing event)
 	{
 		Entity ent = event.entity;
-		if(ent instanceof EntityPlayer)
+		if((ent instanceof EntityPlayer) && !(ent instanceof FakePlayer))
 		{
 			EntityPlayer pl = (EntityPlayer) ent;
 			TeamPlayerData tpd = new TeamPlayerData(pl);
