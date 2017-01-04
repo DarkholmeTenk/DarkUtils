@@ -6,9 +6,12 @@ import io.darkcraft.darkcore.mod.handlers.CommandHandler;
 import io.darkcraft.darkcore.mod.interfaces.IConfigHandlerMod;
 import io.darkcraft.darkutils.mod.cc.CC;
 import io.darkcraft.darkutils.mod.proxy.CommonProxy;
+import io.darkcraft.darkutils.mod.spawning.SpawnCommand;
+import io.darkcraft.darkutils.mod.spawning.SpawnEventHandler;
 import io.darkcraft.darkutils.mod.teams.TeamSystem;
 import io.darkcraft.darkutils.mod.unifier.Unifier;
 import io.darkcraft.darkutils.mod.unifier.UnifierCommand;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -40,15 +43,18 @@ public class DarkUtilsMod implements IConfigHandlerMod
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		CommandHandler.registerCommand(new UnifierCommand());
+		CommandHandler.registerCommand(new SpawnCommand());
 		Unifier.refreshConfigs();
 		unifier.getUnificationList();
 		FMLCommonHandler.instance().bus().register(unifier);
+		FMLCommonHandler.instance().bus().register(new SpawnEventHandler());
 	}
 
 	@EventHandler
 	public void servStart(FMLServerStartingEvent event)
 	{
 		TeamSystem.serverStart();
+		SpawnEventHandler.clear();
 	}
 
 	@Override
